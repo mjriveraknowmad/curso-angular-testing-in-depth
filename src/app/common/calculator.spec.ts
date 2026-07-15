@@ -21,4 +21,14 @@ describe('Calculator', () => {
     expect(result).toBe(5);
   });
 
+  it('shows how spies work', () => {
+    // Creamos un spy para la funcion add del objeto calculator.
+    const addSpy = vi.spyOn(calculator, 'add');
+    const result = calculator.add(2, 3);
+    expect(addSpy).toHaveBeenCalled();
+    expect(addSpy).toHaveBeenCalledOnce();
+    expect(addSpy).toHaveBeenCalledWith(2, 3);
+    expect(result).toBe(5);
+  });
+
 });

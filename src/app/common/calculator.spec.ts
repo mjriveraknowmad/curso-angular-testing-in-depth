@@ -1,7 +1,15 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { calculator } from './calculator';
 
 describe('Calculator', () => {
+
+  beforeEach(() => {
+    // Este beforeEach se ejecuta antes de cada test
+    vi.clearAllMocks();
+    vi.resetAllMocks();
+    vi.restoreAllMocks();
+  });
+
   it('should add two numbers correctly', () => {
     const result = calculator.add(2, 3);
     expect(result).toBe(5);

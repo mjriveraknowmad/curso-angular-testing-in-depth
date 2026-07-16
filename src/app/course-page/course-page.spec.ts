@@ -160,6 +160,34 @@ describe('CoursePage', () => {
 
   });
 
+  it('should update page size', async () => {
+
+    mockCoursesService.findLessons.mockReturnValueOnce(FIRST_PAGE);
+
+    await fixture.whenStable();
+
+    mockCoursesService.findLessons.mockReturnValueOnce(
+      getMockLessonsPage(1, '', 'asc', 0, 10)
+    );
+
+    // Simular el cambio de tamaño de página a 10
+    const selectEl = de.query(By.css('.items-label select')).nativeElement;
+    selectEl.value = 10;
+    selectEl.dispatchEvent(new Event("change"));
+
+    await fixture.whenStable(); // Esperar a que todas las tareas asíncronas se completen antes de continuar con las afirmaciones
+
+    // Verificar
+    expect(component.pageSize()).toBe(10);
+    expect(component.pageIndex()).toBe(0);
+
+    const lessons = getTableContent(de, "tbody tr td.description-cell");
+    expect(lessons).toHaveLength(10);
+    expect(lessons[0]).toBe("Lesson 1");
+    expect(lessons[9]).toBe("Lesson 10");
+
+  });
+
 });
 
 

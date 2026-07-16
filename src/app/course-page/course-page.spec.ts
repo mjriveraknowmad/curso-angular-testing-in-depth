@@ -6,7 +6,7 @@ import {CoursesService} from '../services/courses.service';
 import {CoursePage} from './course-page';
 import {ActivatedRoute} from '@angular/router';
 import {By} from '@angular/platform-browser';
-import {clickButton, getTextContent} from "../testing/testing-utils";
+import {clickButton, getTableContent} from "../testing/testing-utils";
 
 
 const FIRST_PAGE = getMockLessonsPage(1, '', 'asc', 0, 3);
@@ -55,7 +55,7 @@ describe('CoursePage', () => {
 
     expect(mockCoursesService.findLessons).toHaveBeenLastCalledWith(1, '', "asc", 0, 3); // Verificar que se haya llamado al servicio con los parámetros correctos
 
-    const lessons = getTextContent(de, "tbody tr td.description-cell");
+    const lessons = getTableContent(de, "tbody tr td.description-cell");
     expect(lessons).toHaveLength(3);
     expect(lessons[0]).toBe("Lesson 1");
     expect(lessons[1]).toBe("Lesson 2");
@@ -75,6 +75,34 @@ describe('CoursePage', () => {
     const spinnerAfter = de.query(By.css(".loading-spinner"));
     expect(spinnerAfter).toBeFalsy();
     expect(component.loading()).toBe(false);
+  });
+
+  it('should navigate to next page', async () => {
+
+    mockCoursesService.findLessons.mockReturnValueOnce(FIRST_PAGE); // hacemos que el mock devuelva la primera página de lecciones cuando se llame por primera vez.
+
+    await fixture.whenStable();
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledOnce();
+    expect(mockCoursesService.findLessons).toHaveBeenLastCalledWith(1, '', 'asc', 0, 3);
+
+    mockCoursesService.findLessons.mockReturnValueOnce(SECOND_PAGE);// hacemos que el mock devuelva la segunda página de lecciones cuando se llame por segunda vez.
+
+    // Simular el clic en el botón "Next"
+    clickButton(de,".page-controls button:last-child");
+
+    await fixture.whenStable();
+
+    // Verificar que se haya llamado al servicio con los parámetros correctos para la segunda página
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(2);
+    expect(mockCoursesService.findLessons).toHaveBeenLastCalledWith(1, '', 'asc', 1, 3);
+
+    const lessons = getTableContent(de, "tbody tr td.description-cell");
+    expect(lessons).toHaveLength(3);
+    expect(lessons[0]).toBe("Lesson 4");
+    expect(lessons[1]).toBe("Lesson 5");
+    expect(lessons[2]).toBe("Lesson 6");
+
   });
 
 });

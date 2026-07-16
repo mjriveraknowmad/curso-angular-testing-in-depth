@@ -105,6 +105,32 @@ describe('CoursePage', () => {
 
   });
 
+  it('should navigate to previous page', async () => {
+
+    mockCoursesService.findLessons
+      .mockReturnValueOnce(SECOND_PAGE)  // ← Para la 1ª llamada
+      .mockReturnValueOnce(FIRST_PAGE);  // ← Para la 2ª llamada , así porque vamos a probar la navegación a la página anterior.
+
+    component.pageIndex.set(1);  // pageIndex = 1 es la segunda página (0-indexed)
+
+    await fixture.whenStable(); // → Aquí se dispara findLessons(1, '', 'asc', 1, 3) → devuelve SECOND_PAGE
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(1);
+    expect(mockCoursesService.findLessons).toHaveBeenLastCalledWith(1, '', 'asc', 1, 3);
+
+    clickButton(de,".page-controls button:first-child"); // Simular el clic en el botón "Previous"
+
+    await fixture.whenStable();
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(2);
+    expect(mockCoursesService.findLessons).toHaveBeenLastCalledWith(1, '', 'asc', 0, 3);
+
+    const lessons = getTableContent(de, "tbody tr td.description-cell");
+    expect(lessons).toHaveLength(3);
+    expect(lessons[0]).toBe("Lesson 1");
+    expect(lessons[1]).toBe("Lesson 2");
+    expect(lessons[2]).toBe("Lesson 3");
+  });
 });
 
 

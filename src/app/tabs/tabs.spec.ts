@@ -55,5 +55,25 @@ describe.only('TabsComponent', () => {
     expect(tab.nativeElement.classList).toContain('active');
   });
 
+  it('should emit the selected tab value when a tab is clicked', () => {
+    const lastTabEl = debugElement.query(By.css('.tab-link:last-child'));
+    lastTabEl.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.activeTab()).toBe('Advanced');
+  });
+
+  it('should emit the tabChanged when a tab is clicked', () => {
+    const tabChangedSpy = vi.spyOn(component.tabChanged, 'emit');
+    const lastTabEl = debugElement.query(By.css('.tab-link:last-child'));
+    lastTabEl.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(component.activeTab()).toBe('Advanced');
+    expect(tabChangedSpy).toHaveBeenCalledWith('Advanced');
+    expect(tabChangedSpy).toHaveBeenCalledOnce();
+
+  });
+
 
 });

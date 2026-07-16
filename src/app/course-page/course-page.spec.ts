@@ -1,14 +1,17 @@
-import {beforeEach, describe, expect, it, vi} from 'vitest';
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {DebugElement} from '@angular/core';
-import {getMockLessonsPage, MOCK_COURSES} from '../testing/testing-data';
+import {getMockLessonsPage, MOCK_COURSES, MOCK_LESSONS} from '../testing/testing-data';
 import {CoursesService} from '../services/courses.service';
 import {CoursePage} from './course-page';
 import {ActivatedRoute} from '@angular/router';
-import {getTextContent} from "../testing/testing-utils";
+import {By} from '@angular/platform-browser';
+import {clickButton, getTextContent} from "../testing/testing-utils";
 
 
 const FIRST_PAGE = getMockLessonsPage(1, '', 'asc', 0, 3);
+const SECOND_PAGE = getMockLessonsPage(1, '', 'asc', 1, 3);
+const SEARCH_RESULTS = getMockLessonsPage(1, 'Lesson 20', 'asc',0, 3);
 
 describe('CoursePage', () => {
   let component: CoursePage;
@@ -60,6 +63,19 @@ describe('CoursePage', () => {
 
   });
 
+  it('should show the loading spinner only while fetching', async () => {
+    fixture.detectChanges();
+    const spinner = de.query(By.css(".loading-spinner"));
+    expect(spinner).toBeTruthy();
+    expect(component.loading()).toBe(true);
+
+     mockCoursesService.findLessons.mockReturnValueOnce(FIRST_PAGE); // llamará a la función del servicio, pero como es un mock, no hace nada y devuelve lo que le digamos.
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const spinnerAfter = de.query(By.css(".loading-spinner"));
+    expect(spinnerAfter).toBeFalsy();
+    expect(component.loading()).toBe(false);
+  });
 
 });
 

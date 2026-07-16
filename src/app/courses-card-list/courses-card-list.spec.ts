@@ -20,6 +20,7 @@ describe.only('CoursesCardList', () => {
 
     fixture = TestBed.createComponent(CoursesCardList);
     component = fixture.componentInstance;
+    // componentRef es el "control remoto" de Angular para manipular inputs/outputs, mientras que componentInstance es el acceso directo a la clase, pero para crear un input debemos usar componentRef.setInput() y no componentInstance.courses = MOCK_COURSES, ya que el primero dispara el ciclo de vida de Angular y el segundo no.
     fixture.componentRef.setInput('courses', MOCK_COURSES);
     fixture.detectChanges();
 

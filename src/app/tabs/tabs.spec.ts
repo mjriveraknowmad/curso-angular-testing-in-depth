@@ -47,5 +47,13 @@ describe.only('TabsComponent', () => {
     expect(tabElements[1].nativeElement.textContent.trim()).toContain('Advanced');
   });
 
+  it('should apply the active class to the selected tab', () => {
+    fixture.componentRef.setInput('activeTab', 'Advanced');
+    fixture.detectChanges();
+
+    const tab = debugElement.query(By.css('.tab-link:last-child'));
+    expect(tab.nativeElement.classList).toContain('active');
+  });
+
 
 });

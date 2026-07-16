@@ -1,10 +1,9 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { HelloWorld } from "./hello-world";
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { DebugElement } from "@angular/core";
+import { beforeEach, describe, expect, it } from 'vitest';
+import { HelloWorld } from './hello-world';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DebugElement } from '@angular/core';
 
 describe.only('HelloWorld', () => {
-
   let fixture: ComponentFixture<HelloWorld>;
   let debugElement: DebugElement;
   let el: HTMLElement;
@@ -12,7 +11,7 @@ describe.only('HelloWorld', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HelloWorld]
+      imports: [HelloWorld],
     }).compileComponents();
     TestBed.createComponent(HelloWorld);
     fixture = TestBed.createComponent(HelloWorld);
@@ -31,5 +30,4 @@ describe.only('HelloWorld', () => {
     expect(h1).toBeDefined();
     expect(h1?.textContent).toEqual(component.message);
   });
-
 });

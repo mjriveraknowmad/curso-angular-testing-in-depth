@@ -13,7 +13,6 @@ describe.only('HelloWorld', () => {
     TestBed.configureTestingModule({
       imports: [HelloWorld],
     }).compileComponents();
-    TestBed.createComponent(HelloWorld);
     fixture = TestBed.createComponent(HelloWorld);
     debugElement = fixture.debugElement;
     el = debugElement.nativeElement;

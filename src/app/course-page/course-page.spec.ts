@@ -188,6 +188,50 @@ describe('CoursePage', () => {
 
   });
 
+  it('should debounce search input by 400ms', async () => {
+    // Reemplazamos los timers reales (setTimeout, setInterval, etc.) con versiones falsificadas que puedes controlar manualmente
+    vi.useFakeTimers();
+
+    mockCoursesService.findLessons.mockReturnValueOnce(FIRST_PAGE);
+
+    fixture.detectChanges();
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(1);
+
+    mockCoursesService.findLessons.mockReturnValueOnce(SEARCH_RESULTS);
+
+    component.onSearch("Lesson 20");
+    //  Para avanzar el tiempo de forma controlada sin esperar realmente a los milisegundos indicados.
+    vi.advanceTimersByTime(399);
+    fixture.detectChanges();
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(1);
+
+    // Avanzamos el tiempo 1ms más para superar el debounce de 400ms
+    vi.advanceTimersByTime(1);
+    fixture.detectChanges();
+
+    expect(mockCoursesService.findLessons).toHaveBeenCalledTimes(2);
+    expect(mockCoursesService.findLessons)
+      .toHaveBeenLastCalledWith(1, 'Lesson 20', 'asc', 0, 3);
+
+    // Esperamos a que todas las tareas asíncronas se completen antes de continuar con las afirmaciones
+    await vi.runAllTimersAsync();
+
+    expect(component.lessons()?.length, "lesson() value is not correct").toBe(1);
+
+    const lessons = getTableContent(de, "tbody tr td.description-cell");
+    expect(lessons).toHaveLength(1);
+    expect(lessons[0]).toBe("Lesson 20");
+
+  });
+
+  afterEach(() => {
+    // Restaurar los timers a timers reales después de cada prueba para evitar efectos secundarios en otras pruebas, por ejemplo en la anterior prueba de debounce, donde se usaron timers falsos.
+    vi.useRealTimers();
+  })
+
+
 });
 
 

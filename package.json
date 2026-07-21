@@ -7,6 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --coverage",
+    "test:browser": "ng test --browsers=chromium",
     "server": "tsx --tsconfig ./server/server.tsconfig.json ./server/server.ts"
   },
   "prettier": {
